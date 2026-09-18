@@ -1,0 +1,2 @@
+add_executable(oversub_bench main.cpp)
+target_link_libraries(oversub_bench PRIVATE OversubscriptionGovernor::OversubscriptionGovernor)

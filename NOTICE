@@ -1,0 +1,20 @@
+Oversubscription Governor
+
+Copyright 2026 Summon Software Labs
+
+Oversubscription Governor is an open-source, vendor-neutral C++20 runtime for
+generation-bound governance of deliberate network oversubscription: contention
+domains, guarantees, contingent demand, risk budgets, headroom, and bounded
+corrective intent.
+
+This product is licensed under the Apache License, Version 2.0. See the
+LICENSE file in this distribution for the full license text.
+
+Oversubscription Governor does not collect or transmit any telemetry. Durable
+state, audit history, and benchmark output are written only to paths chosen by
+the operator on the machine running the software.
+
+Oversubscription Governor accepts contributions from individuals and
+organizations on the terms of the Apache License 2.0 without requiring a
+Contributor License Agreement (CLA). See CONTRIBUTING.md for contribution
+guidance.

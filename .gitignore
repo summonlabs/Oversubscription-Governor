@@ -1,0 +1,40 @@
+# Build artifacts
+/build/
+/build-*/
+/out/
+/install-prefix/
+/cmake-build-*/
+*.obj
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.idb
+*.o
+*.a
+*.so
+*.dll
+*.exe
+*.log
+*.cache
+/build-tmp/
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.swp
+*.tmp
+
+# downstream consumer build
+/downstream/consumer/build/
+
+# Test / runtime debris
+/test-debris/
+/crash/
+*.dmp
+*.core
+/var/
+/dist-state/
