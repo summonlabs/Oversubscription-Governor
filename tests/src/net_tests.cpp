@@ -276,3 +276,14 @@ TEST(net_rejects_invalid_addresses) {
   CHECK(!status.ok());
   CHECK_EQ(status.code, StatusCode::InvalidArgument);
 }
+
+TEST(net_a_second_listener_cannot_take_a_listening_port) {
+  Socket first;
+  u16 port = 0;
+  REQUIRE(tcp_listen("127.0.0.1", 0, first, port).ok());
+  Socket second;
+  u16 second_port = 0;
+  const Status status = tcp_listen("127.0.0.1", port, second, second_port);
+  // Two coordinators must never share one listening port: the second bind fails.
+  CHECK(!status.ok());
+}

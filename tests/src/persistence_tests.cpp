@@ -1,5 +1,8 @@
 // Persistence, restart, recovery, and durability tests.
+#include <chrono>
+#include <fstream>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "framework.hpp"
@@ -428,4 +431,32 @@ TEST(persistence_rejects_oversized_files) {
   const Status status = read_file_bounded(dir.file("state.bin"), 128, bytes);
   CHECK(!status.ok());
   CHECK_EQ(status.code, StatusCode::OutOfRange);
+}
+
+TEST(persistence_atomic_replace_waits_for_a_reader_to_close) {
+  otest::TempDir dir("reader");
+  const std::string path = dir.file("state.bin");
+  const std::vector<u8> first(64, u8{0x11});
+  const std::vector<u8> second(96, u8{0x22});
+  REQUIRE(write_file_atomic(path, first, true).ok());
+  bool reader_opened = false;
+  bool replaced = false;
+  {
+    // Another tool reading the store (an inspection, a scan) holds the state
+    // file open while it is replaced, and closes it shortly after.
+    std::ifstream reader(path, std::ios::binary);
+    reader_opened = reader.is_open();
+    std::thread writer([&path, &second, &replaced] {
+      replaced = write_file_atomic(path, second, true).ok();
+    });
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    reader.close();
+    writer.join();
+  }
+  std::vector<u8> stored;
+  REQUIRE(read_file_bounded(path, 1 << 20, stored).ok());
+  CHECK(reader_opened);
+  // The write is not lost because a reader had the file open for a moment.
+  CHECK(replaced);
+  CHECK(stored == second);
 }
